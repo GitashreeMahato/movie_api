@@ -80,9 +80,6 @@ app.get('/movies', (req, res)=>{
 
  
 
-
-
-
 // set up error handling
 app.use((err, req, res, next)=>{
   console.error(err.stack);
@@ -95,6 +92,35 @@ app.use((err, req, res, next)=>{
 app.listen(8080,()=>{
   console.log("My server is running on port 8080.");
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //---------------------------------------------------------------------------------------------------
