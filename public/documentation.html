@@ -52,36 +52,31 @@
                     <td>None</td>
                     <td>A JSON object holding data about a single movie, containing description, genre, director, image URL, and whether it’s featured or not property. Example: 
                         <code>
-                            Title : "The Dark Knight",
-                            Description: "When the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
-                            Genre:
-                              {
-                                Name :"Action",
-                                Description: "Action movies feature characters with extraordinary abilities who engage in thrilling action sequences, typically battling supervillains to save the world.",
-                              },
-                            
-                            Director:
-                              {
-                                Name: "Christopher Nolan",
-                                bio : "Christopher Nolan is a British-American film director, producer, and screenwriter known for his work on films such as 'Inception', 'The Dark Knight Trilogy', 'Interstellar, and Dunkirk. Nolan is known for his innovative storytelling and contributions to the science fiction and superhero genres.",
-                                DOB : "July 30, 1970",
-                              },
-                        
-                            Actor: [
-                                {
-                                  name: "Christian Bale",
-                                  DOB: "January 30, 1974",
+                            {
+                                "Genres": {
+                                    "_id": "652172ea0e38b2a356c819b5"
                                 },
-                                {
-                                  name: "Heath Ledger",
-                                  DOB: "April 4, 1979",
-                                  Death: "January 22, 2008"
+                                "Directors": {
+                                    "_id": "65217a050e38b2a356c819ba"
                                 },
-                              ],
-                            Release_date: 2008 ,
-                            Rating: 9.0 ,
-                            imageURL: "https://www.imdb.com/title/tt0468569/mediaviewer/rm4023877632/?ref_=tt_ov_i/",
-                            Featured: true
+                                "_id": "652196100e38b2a356c819dd",
+                                "Title": "Inception",
+                                "Description": "A thief, who enters people's dreams to steal their secrets, is given a final job where he must implant an idea into someone's mind.",
+                                "Actors": [
+                                    {
+                                        "_id": "65218e380e38b2a356c819c5"
+                                    },
+                                    {
+                                        "_id": "65218e400e38b2a356c819c6"
+                                    },
+                                    {
+                                        "_id": "65218e480e38b2a356c819c7"
+                                    }
+                                ],
+                                "Release_date": 2010,
+                                "Rating": 8.8,
+                                "imageURL": "https://www.imdb.com/title/tt1375666/mediaviewer/rm3426651392/?ref_=tt_ov_i",
+                                "Featured": true
                             }
                         </code>
                     </td>
@@ -94,9 +89,10 @@
                     <td>A JSON object holding data about a genre containing name and description properties. Example:
                         <code>
                             {
-                                Name :"Action",
-                                Description: "Action movies feature characters with extraordinary abilities who engage in thrilling action sequences, typically battling supervillains to save the world.",
-                              }
+                                "_id": "652171c10e38b2a356c819b3",
+                                "name": "Thriller",
+                                "description": "Thriller film, also known as suspense film or suspense thriller, is a broad film genre that involves excitement and suspense in the audience."
+                            }
                             
                         </code>
                     </td>
@@ -110,10 +106,11 @@
                         about a director of each movie. Example:
                         <code>
                             {
-                                Name: "Christopher Nolan",
-                                bio : "Christopher Nolan is a British-American film director, producer, and screenwriter known for his work on films such as 'Inception', 'The Dark Knight Trilogy', 'Interstellar, and Dunkirk. Nolan is known for his innovative storytelling and contributions to the science fiction and superhero genres.",
-                                DOB : "July 30, 1970",
-                              },
+                                "_id": "65217c5d0e38b2a356c819be",
+                                "name": "Ron Howard",
+                                "bio": "Ronald William Howard is an American director, producer, screenwriter, and actor. Howard started his career as a child actor before transitioning to a career as a director of acclaimed and notable films.",
+                                "birth_year": "1954-03-01T00:00:00.000Z"
+                            }
                         </code>
                     </td>
                 </tr>
@@ -125,65 +122,66 @@
                         about a user to add , structured like:
                         <code>
                             {
-                                "Name": "Krish",
-                                "Password": "k@123",
-                                "Email": "k@gmail.com",
-                                "dob": "July 12, 1994",
-                                "favoriteMovies": [],
+                                "username": "Trisha",
+                                "password": "tri@123",
+                                "email": "trisha@gmail.com'",
+                                "birth_date": "1994/09/09"
                             }
                         </code>
                     </td>
                     <td>A JSON object holding data about a user that was added, inluding an ID:
                         <code>
                             {
-                                "Name": "Krish",
-                                "Password": "k@123",
-                                "Email": "k@gmail.com",
-                                "dob": "July 12, 1994",
-                                "favoriteMovies": [],
-                                "id": "4ad281ea-a3a9-4b04-891a-60cbdae39766"
+                                "_id": "652596d0ef5ff34d917bd889",
+                                "username": "Trisha",
+                                "password": "tri@123",
+                                "email": "trisha@gmail.com'",
+                                "birth_date": "1994-09-09T22:00:00.000Z",
+                                "favorite_movies": [],
+                                "__v": 0
                             }
                         </code>
                     </td> 
                 </tr>
 
                 <tr>
-                    <td>Update a user's info (name)</td>
-                    <td>/users/:id</td>
+                    <td>Update a user's info (name, password,email, birth_date)</td>
+                    <td>/users/:username</td>
                     <td>PUT</td>
                     <td>A JSON object holding user data, structured like this:
                         <code>
                             {
-                                "Name": "Rubi",
-                                "Password": "rubi@123",
-                                "Email": "rubi@gmail.com",
-                                "dob": "June 12, 1994",
-                                "favoriteMovies": ["The God Father"]
-                              },
+                            "username": "Ruhi Roy",
+                            "password": "ruhi@123",
+                            "email": "ruhi@gmail.com'",
+                            "birth_date": "12/09/1995"
+                            }
                         </code>
                     </td>
                     <td>A JSON object holding data about a user that was updated:
                         <code>
                             {
-                                "Name": "Rubi Roy",
-                                "Password": "rubi@123",
-                                "Email": "rubi@gmail.com",
-                                "dob": "June 12, 1994",
-                                "favoriteMovies": ["The God Father"]
-                              }
+                                "_id": "65259530731835cd5948f654",
+                                "username": "Ruhi Roy",
+                                "password": "ruhi@123",
+                                "email": "ruhi@gmail.com'",
+                                "favorite_movies": [],
+                                "__v": 0,
+                                "birth_date": "1995-12-08T23:00:00.000Z"
+                            }
                         </code>
                     </td>
                 </tr>
                 <tr>
                     <td>Add movies to user favourite list </td>
-                    <td>/users/:id/:movieName</td>
+                    <td>/users/:username/movies/:id</td>
                     <td>POST</td>
                     <td>None</td>
                     <td>A text message indicating whether a movie was successfully added.</td>
                 </tr>
                 <tr>
                     <td>Remove a movie from user favorite list</td>
-                    <td>/users/:id/:movieName</td>
+                    <td>/users/:username/movies/:id</td>
                     <td>DELETE</td>
                     <td>None</td>
                     <td>A text message indicating whether a movie was successfully removed.
