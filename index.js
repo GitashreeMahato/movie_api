@@ -33,7 +33,7 @@ const Users = Models.User;
 
 
 // connected mongodb or integrated b/w REST API to data layer
-// mongoose.connect('mongodb://127.0.0.1:27017/myFlix', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb://127.0.0.1:27017/myFlix', {useNewUrlParser: true, useUnifiedTopology: true});
 
 
 
