@@ -11,14 +11,20 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const uuid = require('uuid');
 const fs = require('fs'); // import built in node modules fs and path 
 const path = require('path');
-
+const { title } = require('process');
 const mongoose = require('mongoose');
 // imports model.js 
 const Models= require('./models');
+const cors = require('cors');
+app.use(cors());
 
+// server-side validator
+const {check, validationResult}= require('express-validator'); 
 let auth = require('./auth')(app);
 const passport=require('passport');
 require('./passport');
+
+
 // these model represents data for movies collection
 const Movies= Models.Movie;
 const Genres = Models.Genre;
@@ -30,9 +36,6 @@ const Users = Models.User;
 mongoose.connect('mongodb://127.0.0.1:27017/myFlix', {useNewUrlParser: true, useUnifiedTopology: true});
 
 
-const { title } = require('process');
-// const { default: mongoose } = require('mongoose');
-// const { json } = require('body-parser');
 
 
 // setup logging
@@ -46,8 +49,11 @@ app.use(express.static('public'));
 
 
 app.get('/', (req, res) => {
-	res.send('This is the default route endpoint');
+	res.send('Welcome to myFlix app.');
 });
+
+
+
 
 // Get all movies
 app.get('/movies', passport.authenticate('jwt', {session:false}), (req,res)=>{
@@ -110,10 +116,28 @@ app.get('/director/:name', passport.authenticate('jwt', {session: false}), (req,
 
 
 
-// create a user
-app.post('/users',  async (req, res)=>{
-  await Users.findOne({username: req.body.username})
- .then((user)=>{
+// create a user 
+app.post('/users',
+// Validation logic here for request
+  //you can either use a chain of methods like .not().isEmpty()
+  //which means "opposite of isEmpty" in plain english "is not empty"
+  //or use .isLength({min: 5}) which means
+  //minimum value of 5 characters are only allowed 
+[
+  check('username', 'Username is required').isLength({min: 5}),
+  check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+  check('password', 'Password is required').not().isEmpty(),
+  check('email', 'Email does not appear to be valid').isEmail()
+],  
+  async (req, res)=>{
+    //check the validation object for errors
+    let errors = validationResult(req);
+    if(!errors.isEmpty()){
+      return res.status(422).json({errors: errors.array()});
+    }
+  let hashPassword = Users.hashPassword(req.body.password);   // hash any password by user when registering before storing in mongoDB
+  await Users.findOne({username: req.body.username})  // Search to see if a user with the requested username already exists
+ .then((user)=>{    //If the user is found, send a response that it already exists
    if(user){
      return res.status(400).send(req.body.username + ' already exists');
    }else{
@@ -122,7 +146,7 @@ app.post('/users',  async (req, res)=>{
        password : req.body.password,
        email : req.body.email,
        birth_date : req.body.birth_date,
-       favorite_movies: req.body.favorite_movies
+      //  favorite_movies: req.body.favorite_movies
      }).then((user)=>{
        res.status(201).json(user);
      }).catch((err)=>{
@@ -135,6 +159,8 @@ app.post('/users',  async (req, res)=>{
    res.status(500).send('Error : ' + err);
 })
 })
+
+
 
 
 // update user's info
@@ -258,9 +284,9 @@ app.use((err, req, res, next)=>{
 
 })
 // listen for requests
-
-app.listen(8080,()=>{
-  console.log("My server is running on port 8080.");
+const port = process.env.PORT || 8080;
+app.listen(port,'0.0.0.0',()=>{
+  console.log("Listening on port " + port);
 });
 
 
@@ -319,8 +345,33 @@ app.listen(8080,()=>{
 
 
 
+// ================================================== 2.8 =====================================
 
-
+// create a user
+app.post('/users',  async (req, res)=>{
+  await Users.findOne({username: req.body.username}) // Search to see if a user with the requested username already exists
+ .then((user)=>{
+   if(user){    //If the user is found, send a response that it already exists
+     return res.status(400).send(req.body.username + ' already exists');
+   }else{
+     Users.create({
+       username: req.body.username,
+       password : req.body.password,
+       email : req.body.email,
+       birth_date : req.body.birth_date,
+       favorite_movies: req.body.favorite_movies
+     }).then((user)=>{
+       res.status(201).json(user);
+     }).catch((err)=>{
+       console.error(err);
+       res.status(500).send('Error : ' + err);
+     })
+   }
+ }).catch((err)=>{
+   console.error(err);
+   res.status(500).send('Error : ' + err);
+})
+})
 
 // ========================================  2.8  ======================================================
 
