@@ -34,7 +34,8 @@ const Users = Models.User;
 
 // connected mongodb or integrated b/w REST API to data layer
 // mongoose.connect('mongodb://127.0.0.1:27017/myFlix', {useNewUrlParser: true, useUnifiedTopology: true});
-// to connect the online database (mongoDB Atlas)
+
+// to connect the heroku API to online database (mongoDB Atlas)
 mongoose.connect(process.env.CONNECTION_URI, {useNewUrlParser: true, useUnifiedTopology: true});
 
 
@@ -145,7 +146,7 @@ app.post('/users',
    }else{
      Users.create({
        username: req.body.username,
-       password : req.body.password,
+       password : hashPassword,
        email : req.body.email,
        birth_date : req.body.birth_date,
       //  favorite_movies: req.body.favorite_movies
