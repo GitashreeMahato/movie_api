@@ -35,7 +35,7 @@ const Users = Models.User;
 // connected mongodb or integrated b/w REST API to data layer
 // mongoose.connect('mongodb://127.0.0.1:27017/myFlix', {useNewUrlParser: true, useUnifiedTopology: true});
 // to connect the online database (mongoDB Atlas)
-mongoose.connect('mongodb+srv://myFlixDbAdmin:Geet%40123$@myflix.wif2ved.mongodb.net/myFlix?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('process.env.CONNECTION_URI', {useNewUrlParser: true, useUnifiedTopology: true});
 
 
 
