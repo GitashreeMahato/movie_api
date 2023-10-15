@@ -351,30 +351,30 @@ app.listen(port,'0.0.0.0',()=>{
 // ================================================== 2.8 =====================================
 
 // create a user
-app.post('/users',  async (req, res)=>{
-  await Users.findOne({username: req.body.username}) // Search to see if a user with the requested username already exists
- .then((user)=>{
-   if(user){    //If the user is found, send a response that it already exists
-     return res.status(400).send(req.body.username + ' already exists');
-   }else{
-     Users.create({
-       username: req.body.username,
-       password : req.body.password,
-       email : req.body.email,
-       birth_date : req.body.birth_date,
-       favorite_movies: req.body.favorite_movies
-     }).then((user)=>{
-       res.status(201).json(user);
-     }).catch((err)=>{
-       console.error(err);
-       res.status(500).send('Error : ' + err);
-     })
-   }
- }).catch((err)=>{
-   console.error(err);
-   res.status(500).send('Error : ' + err);
-})
-})
+// app.post('/users',  async (req, res)=>{
+//   await Users.findOne({username: req.body.username}) // Search to see if a user with the requested username already exists
+//  .then((user)=>{
+//    if(user){    //If the user is found, send a response that it already exists
+//      return res.status(400).send(req.body.username + ' already exists');
+//    }else{
+//      Users.create({
+//        username: req.body.username,
+//        password : req.body.password,
+//        email : req.body.email,
+//        birth_date : req.body.birth_date,
+//        favorite_movies: req.body.favorite_movies
+//      }).then((user)=>{
+//        res.status(201).json(user);
+//      }).catch((err)=>{
+//        console.error(err);
+//        res.status(500).send('Error : ' + err);
+//      })
+//    }
+//  }).catch((err)=>{
+//    console.error(err);
+//    res.status(500).send('Error : ' + err);
+// })
+// })
 
 // ========================================  2.8  ======================================================
 
