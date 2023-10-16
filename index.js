@@ -1,5 +1,3 @@
-
-
 const express = require('express');
 const app = express();
 app.use(express.json());
@@ -167,17 +165,25 @@ app.post('/users',
 
 
 // update user's info
-app.put('/users/:username', passport.authenticate('jwt', { session: false }), async (req, res) => {
+app.put('/users/:username', passport.authenticate('jwt', { session: false }),
+[
+  check('username', 'Username is required').isLength({min: 5}),
+  check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+  check('password', 'Password is required').not().isEmpty(),
+  check('email', 'Email does not appear to be valid').isEmail()
+],
+ async (req, res) => {
   // CONDITION TO CHECK ADDED HERE
   if(req.user.username !== req.params.username){
       return res.status(400).send('Permission denied');
   }
   // CONDITION ENDS
+  let hashPassword = Users.hashPassword(req.body.password); 
   await Users.findOneAndUpdate({ username: req.params.username }, {
       $set:
       {
           username: req.body.username,
-          password: req.body.password,
+          password: hashPassword,
           email: req.body.email,
           birth_date : req.body.birth_date
       }
@@ -618,6 +624,7 @@ app.listen(port,'0.0.0.0',()=>{
 // let movies = [
 
 //         {
+              // "movieId" : "m1",
 //           "Title" : "The Godfather",
 //           "Description": "The patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
 //           "Genres": 
@@ -652,7 +659,7 @@ app.listen(port,'0.0.0.0',()=>{
 //         },
 
 //         {
-            
+              // "movieId" : "m2",            
 //           "Title" : "Inception",
 //           "Description": "A thief, who enters people's dreams to steal their secrets, is given a final job where he must implant an idea into someone's mind.",
 //           "Genres":
@@ -693,7 +700,7 @@ app.listen(port,'0.0.0.0',()=>{
         
 //         {
           
-          
+              // "movieId" : "m3",
 //           "Title" : "The Shawshank Redemption",
 //           "Description": "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
 //           "Genres":
@@ -728,7 +735,7 @@ app.listen(port,'0.0.0.0',()=>{
 //           },
          
 //             {
-              
+              // "movieId" : "m4",
 //           "Title" : "The Dark Knight",
 //           "Description": "When the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
 //           "Genres":
@@ -762,6 +769,7 @@ app.listen(port,'0.0.0.0',()=>{
 //           },
 
 //           {   
+              // "movieId" : "m5",
 //           "Title" : "Forrest Gump",
 //           "Description": "Through three decades of U.S. history, a man with a low IQ witnesses and unwittingly influences several defining historical events in the 20th century United States.",
 //           "Genres":
@@ -922,14 +930,14 @@ app.listen(port,'0.0.0.0',()=>{
 
 //   //add a movie to user favorites list
 
-//   app.post('/users/:id/:movieTitle', (req, res)=>{
-//     const {id, movieTitle} = req.params;
+//   app.post('/users/:id/:movieId', (req, res)=>{
+//     const {id, movieId} = req.params;
     
 //     let user = users.find(user => user.id == id);
 //     if (user){
       
-//       user.favoriteMovies.push(movieTitle);
-//       res.status(200).send(`${movieTitle} has been added to user ${id}'s array.`);
+//       user.favoriteMovies.push(movieId);
+//       res.status(200).send(`${movieId} has been added to user ${id}'s array.`);
 //     }else{
 //       res.status(400).send('no such user');
 //     }
@@ -937,14 +945,14 @@ app.listen(port,'0.0.0.0',()=>{
 
 //   // remove a movie from user favorites list
 
-//   app.delete('/users/:id/:movieTitle', (req, res)=>{
-//     const {id, movieTitle} = req.params;
+//   app.delete('/users/:id/:movieId', (req, res)=>{
+//     const {id, movieId} = req.params;
     
 //     let user = users.find(user => user.id == id);
 //     if (user){
       
-//       user.favoriteMovies = user.favoriteMovies.filter(title => title !== movieTitle);
-//       res.status(200).send(`${movieTitle} has been removed to user ${id}'s array.`);
+//       user.favoriteMovies = user.favoriteMovies.filter(title => title !== movieId);
+//       res.status(200).send(`${movieId} has been removed to user ${id}'s array.`);
 //     }else{
 //       res.status(400).send('no such user');
 //     }
