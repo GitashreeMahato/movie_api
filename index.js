@@ -84,7 +84,7 @@ app.get('/movies/:Title', passport.authenticate('jwt', {session: false}), (req, 
 
 
 // get Genre info for specific Genre
-app.get('/genre/:name', passport.authenticate('jwt', {session: false}), (req, res) => {
+app.get('/movies/genre/:name', passport.authenticate('jwt', {session: false}), (req, res) => {
 	Genres.find({'name': req.params.name })
 		.then((genre) => {
 			if (genre.length == 0) {
@@ -100,7 +100,7 @@ app.get('/genre/:name', passport.authenticate('jwt', {session: false}), (req, re
 });
 
 // get director info by name
-app.get('/director/:name', passport.authenticate('jwt', {session: false}), (req, res) => {
+app.get('/movies/director/:name', passport.authenticate('jwt', {session: false}), (req, res) => {
 	Directors.find({'name': req.params.name })
 		.then((director) => {
 			if (director.length == 0) {
