@@ -56,16 +56,21 @@ app.get('/', (req, res) => {
 
 
 
-// Get all movies
+// Get all movies along with director details
 app.get('/movies', passport.authenticate('jwt', {session:false}), (req,res)=>{
-  Movies.find().then((movies)=>{
-    res.status(201).json(movies);
-  })
-  .catch((err)=>{
-    console.error(err);
-    res.status(500).send('Error : ' + err)
-  })
-})
+  Movies.find()
+    .populate('Directors')  // Populate director details. Assumes 'Directors' is the field name in your Movie schema.
+    .populate('Actors')  // Populate actor details. Assumes 'Actors' is the field name in your Movie schema.
+    .populate('Genres')  // Populate genre details. Assumes 'Genres' is the field name in your Movie schema.
+    .then((movies)=>{
+      res.status(200).json(movies);  // Changed status code to 200 as it's more semantically correct for a successful GET request
+    })
+    .catch((err)=>{
+      console.error(err);
+      res.status(500).send('Error : ' + err);
+    });
+});
+
 
 // Get a movie by title
 app.get('/movies/:Title', passport.authenticate('jwt', {session: false}), (req, res) => {
