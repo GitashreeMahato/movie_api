@@ -84,7 +84,7 @@ app.get('/movies/:Title', passport.authenticate('jwt', {session: false}), (req, 
 
 
 // get Genre info for specific Genre
-app.get('/movies/genre',  (req, res) => {
+app.get('/movies/genre/:name', passport.authenticate('jwt', {session: false}), (req, res) => {
 	Genres.find({'name': req.params.name })
 		.then((genre) => {
 			if (genre.length == 0) {
