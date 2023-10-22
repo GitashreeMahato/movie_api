@@ -56,7 +56,10 @@ app.get('/', (req, res) => {
 
 // Get all movies
 app.get('/movies', passport.authenticate('jwt', {session: false}), (req,res)=>{
-  Movies.find().then((movies)=>{
+  Movies.find()
+  .populate('Genres', 'name')
+  .populate('Directors', 'name')
+  .then((movies)=>{
     res.status(200).json(movies);
   })
   .catch((err)=>{
