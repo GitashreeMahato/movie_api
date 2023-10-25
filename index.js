@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config();
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -27,13 +28,15 @@ require('./passport');
 const Movies= Models.Movie;
 const Genres = Models.Genre;
 const Directors = Models.Director;
+const Actors = Models.Actor;
 const Users = Models.User;
 
-
+// const mongoURL = process.env.CONNECTION_URI
 // connected mongodb or integrated b/w REST API to data layer
 // mongoose.connect('mongodb://127.0.0.1:27017/myFlix', {useNewUrlParser: true, useUnifiedTopology: true});
 
 // to connect the heroku API to online database (mongoDB Atlas)
+// mongoose.connect(mongoURL, {useNewUrlParser: true, useUnifiedTopology: true});
 mongoose.connect(process.env.CONNECTION_URI, {useNewUrlParser: true, useUnifiedTopology: true});
 
 
@@ -53,10 +56,118 @@ app.get('/', (req, res) => {
 	res.send('Welcome to myFlix app.');
 });
 
+// add a movie
+app.post('/movie', passport.authenticate('jwt', {session: false}), async(req, res)=>{
+  await Movies.findOne({Title: req.body.Title})  // Search to see if a user with the requested username already exists
+ .then((movie)=>{    //If the user is found, send a response that it already exists
+   if(movie){
+     return res.status(400).send(req.body.Title + ' already exists');
+   }else{
+     Movies.create({
+       Title: req.body.Title,
+       Description : req.body.Description,
+       Genres : req.body.Genres,
+       Directors : req.body.Directors,
+       Actors: req.body.Actors,
+       Release_date: req.body.Release_date,
+       Rating: req.body.Rating,
+       imgaeURL: req.body.imgaeURL,
+       Featured: req.body.Featured
+      
+     }).then((movie)=>{
+       res.status(201).json(movie);
+     }).catch((err)=>{
+       console.error(err);
+       res.status(500).send('Error : ' + err);
+     })
+   }
+ })
+})
+
+
+// app.post("/api/movies", async (req, res) => {
+//   try {
+//     const newMovieData = req.body;
+//     const newMovie = new Movies(newMovieData);
+//     const savedMovie = await newMovie.save();
+//     res.status(201).json(savedMovie);
+//   } catch (err) {
+//     res.status(400).json({ error: err.message });
+//   }
+// });
+
+// add a genre
+app.post('/genre', passport.authenticate('jwt', {session: false}), async(req, res)=>{
+  Genres.findOne({name: req.body.name})
+  .then((genre)=>{
+    if(genre){
+      return res.status(400).send(req.body.name + 'already exists')
+    }else{
+      Genres.create({
+        name: req.body.name,
+        description: req.body.description
+      }).then((genre)=>{
+        res.status(201).json(genre);
+      }).catch((err)=>{
+        console.error(err);
+        res.status(500).send('Error : ' +err);
+      })
+    }
+  })
+})
+
+// add a director
+app.post('/director', passport.authenticate('jwt', {session: false}), async(req, res)=>{
+  Directors.findOne({name: req.body.name})
+  .then((director)=>{
+    if(director){
+      return res.status(400).send(req.body.name + 'already exists')
+    }else{
+      Directors.create({
+        name: req.body.name,
+        bio: req.body.bio,
+        birth_year: req.body.birth_year,
+        death_year: req.body.death_year
+      }).then((director)=>{
+        res.status(201).json(director);
+      }).catch((err)=>{
+        console.error(err);
+        res.status(500).send('Error : ' +err);
+      })
+    }
+  })
+})
+
+// add a actor
+
+app.post('/actor', passport.authenticate('jwt', {session: false}), async(req, res)=>{
+  Actors.findOne({name: req.body.name})
+  .then((actor)=>{
+    if(actor){
+      return res.status(400).send(req.body.name + 'already exists')
+    }else{
+      Actors.create({
+        name: req.body.name,
+        birth_date: req.body.birth_date,
+        
+      }).then((actor)=>{
+        res.status(201).json(actor);
+      }).catch((err)=>{
+        console.error(err);
+        res.status(500).send('Error : ' +err);
+      })
+    }
+  })
+})
 
 // Get all movies
-app.get('/movies', (req,res)=>{
-  Movies.find().then((movies)=>{
+
+app.get('/movies', passport.authenticate('jwt', {session: false}), (req,res)=>{
+  Movies.find()
+  .populate('Genres')
+  .populate('Directors')
+  .populate('Actors')
+  .then((movies)=>{
     res.status(200).json(movies);
   })
   .catch((err)=>{
@@ -65,9 +176,25 @@ app.get('/movies', (req,res)=>{
   })
 })
 
+// Get all directors
+app.get('/directors', passport.authenticate('jwt', {session: false}), (req,res)=>{
+  Directors.find()
+  .then((director)=>{
+    res.status(200).json(director);
+  })
+  .catch((err)=>{
+    console.error(err);
+    res.status(500).send('Error : ' + err)
+  })
+})
+
+
 // Get a movie by title
 app.get('/movies/:Title', passport.authenticate('jwt', {session: false}), (req, res) => {
 	Movies.findOne({ Title: req.params.Title })
+  .populate('Genres')
+  .populate('Directors')
+  .populate('Actors')
 		.then((movie) => {
 			if (!movie) {
 				return res.status(404).send('Error: ' + req.params.Title + ' was not found');
@@ -83,9 +210,9 @@ app.get('/movies/:Title', passport.authenticate('jwt', {session: false}), (req, 
 
 // get Genre info for specific Genre
 app.get('/movies/genre/:name', passport.authenticate('jwt', {session: false}), (req, res) => {
-	Genres.find({'name': req.params.name })
+	Genres.find({name: req.params.name })
 		.then((genre) => {
-			if (genre.length == 0) {
+			if (genre.length === 0) {
 				return res.status(404).send('Error: no genre found with the ' + req.params.name + ' genre type.');
 			} else {
 				res.status(200).json(genre);
@@ -101,8 +228,8 @@ app.get('/movies/genre/:name', passport.authenticate('jwt', {session: false}), (
 app.get('/movies/director/:name', passport.authenticate('jwt', {session: false}), (req, res) => {
 	Directors.find({'name': req.params.name })
 		.then((director) => {
-			if (director.length == 0) {
-				return res.status(404).send('Error: no director found with the ' + req.params.name + ' name.');
+			if (director.length === 0) {
+				return res.status(404).send('Error: no director found with the ' + req.params.name + 'name.');
 			} else {
 				res.status(200).json(director);
 			}
@@ -199,7 +326,7 @@ app.put('/users/:username', passport.authenticate('jwt', { session: false }),
 
 
 // get all user
-app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/users', (req, res) => {
   Users.find()
    .then((users) => {
      res.status(200).json(users);

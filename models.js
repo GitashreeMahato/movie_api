@@ -21,7 +21,7 @@ let genreSchema = mongoose.Schema({
     name: String,
     description: String
 });
-// Schema for directors
+// // Schema for directors
 let directorSchema = mongoose.Schema(
     {
         name: String,
@@ -30,7 +30,7 @@ let directorSchema = mongoose.Schema(
         death_year: Date
     }
 );
-// Schema for actors
+// // Schema for actors
 let actorSchema= mongoose.Schema(
     {
         name: String,
