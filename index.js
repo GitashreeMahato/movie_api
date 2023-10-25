@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config();
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -30,16 +31,13 @@ const Directors = Models.Director;
 const Actors = Models.Actor;
 const Users = Models.User;
 
-const mongoURL = process.env.CONNECTION_URI || 'mongodb://127.0.0.1:27017/myFlix'
+// const mongoURL = process.env.CONNECTION_URI
 // connected mongodb or integrated b/w REST API to data layer
 // mongoose.connect('mongodb://127.0.0.1:27017/myFlix', {useNewUrlParser: true, useUnifiedTopology: true});
 
 // to connect the heroku API to online database (mongoDB Atlas)
-mongoose.connect(mongoURL, {useNewUrlParser: true, useUnifiedTopology: true});
-// mongoose.connect(process.env.CONNECTION_URI, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true
-// });
+// mongoose.connect(mongoURL, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(process.env.CONNECTION_URI, {useNewUrlParser: true, useUnifiedTopology: true});
 
 
 
@@ -165,9 +163,9 @@ app.post('/actor', passport.authenticate('jwt', {session: false}), async(req, re
 // Get all movies
 app.get('/movies', passport.authenticate('jwt', {session: false}), (req,res)=>{
   Movies.find()
-  // .populate('Genres')
-  // .populate('Directors')
-  // .populate('Actors')
+  .populate('Genres')
+  .populate('Directors')
+  .populate('Actors')
   .then((movies)=>{
     res.status(200).json(movies);
   })
@@ -177,9 +175,25 @@ app.get('/movies', passport.authenticate('jwt', {session: false}), (req,res)=>{
   })
 })
 
+// Get all directors
+app.get('/directors', passport.authenticate('jwt', {session: false}), (req,res)=>{
+  Directors.find()
+  .then((director)=>{
+    res.status(200).json(director);
+  })
+  .catch((err)=>{
+    console.error(err);
+    res.status(500).send('Error : ' + err)
+  })
+})
+
+
 // Get a movie by title
 app.get('/movies/:Title', passport.authenticate('jwt', {session: false}), (req, res) => {
 	Movies.findOne({ Title: req.params.Title })
+  .populate('Genres')
+  .populate('Directors')
+  .populate('Actors')
 		.then((movie) => {
 			if (!movie) {
 				return res.status(404).send('Error: ' + req.params.Title + ' was not found');
@@ -210,7 +224,7 @@ app.get('/movies/genre/:name', passport.authenticate('jwt', {session: false}), (
 });
 
 // get director info by name
-app.get('/movies/director/name', passport.authenticate('jwt', {session: false}), (req, res) => {
+app.get('/movies/director/:name', passport.authenticate('jwt', {session: false}), (req, res) => {
 	Directors.find({'name': req.params.name })
 		.then((director) => {
 			if (director.length === 0) {
