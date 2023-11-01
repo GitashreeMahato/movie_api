@@ -69,8 +69,8 @@ app.post('/movie', passport.authenticate('jwt', {session: false}), async(req, re
        Genres : req.body.Genres,
        Directors : req.body.Directors,
        Actors: req.body.Actors,
-       Release_date: req.body.Release_date,
-       Rating: req.body.Rating,
+       Release_Date: req.body.Release_Date,
+       Ratings: req.body.Ratings,
        imgaeURL: req.body.imgaeURL,
        Featured: req.body.Featured
       
