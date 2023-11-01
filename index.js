@@ -211,6 +211,7 @@ app.get('/movies/:Title', passport.authenticate('jwt', {session: false}), (req, 
 // get Genre info for specific Genre
 app.get('/movies/genre/:name', passport.authenticate('jwt', {session: false}), (req, res) => {
 	Genres.find({name: req.params.name })
+  
 		.then((genre) => {
 			if (genre.length === 0) {
 				return res.status(404).send('Error: no genre found with the ' + req.params.name + ' genre type.');
@@ -328,6 +329,7 @@ app.put('/users/:username', passport.authenticate('jwt', { session: false }),
 // get all user
 app.get('/users', (req, res) => {
   Users.find()
+  .populate('movies')
    .then((users) => {
      res.status(200).json(users);
    })
@@ -342,6 +344,7 @@ app.get('/users', (req, res) => {
 // Get a user by username
 app.get('/users/:username', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOne({ username: req.params.username })
+  .populate('movies')
    .then((user) => {
      res.json(user);
    })
