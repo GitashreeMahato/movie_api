@@ -10,8 +10,8 @@ let movieSchema = mongoose.Schema(
     Directors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Director' }],  // Reference to Director schema
     Actors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Actor' }],  // Reference to Actor schema
     imageURL: String,
-    Release_Date: Date,
-    Ratings: Number, 
+    // Release_Date: Date,
+    // Ratings: Number, 
     Featured: Boolean
 }
 
@@ -26,15 +26,15 @@ let directorSchema = mongoose.Schema(
     {
         name: String,
         bio : String,
-        birth_year: Date,
-        death_year: Date
+        // birth_year: Date,
+        // death_year: Date
     }
 );
 // // Schema for actors
 let actorSchema= mongoose.Schema(
     {
         name: String,
-        birth_date: Date
+        // birth_date: Date
     }
 );
 // Schema for users
