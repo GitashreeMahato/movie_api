@@ -300,3 +300,6 @@ Timestamp : Fri Sep 29 2023 18:30:46 GMT+0200 (Central European Summer Time)
 127.0.0.1 - - [25/Oct/2023:09:22:21 +0000] "GET /movies/Dogville HTTP/1.1" 200 1651 "-" "PostmanRuntime/7.34.0"
 127.0.0.1 - - [31/Oct/2023:11:15:59 +0000] "GET /movies HTTP/1.1" 200 16894 "-" "PostmanRuntime/7.34.0"
 127.0.0.1 - - [31/Oct/2023:11:39:38 +0000] "GET /movies HTTP/1.1" 200 18398 "-" "PostmanRuntime/7.34.0"
+127.0.0.1 - - [02/Nov/2023:13:40:09 +0000] "POST /users/RimSimmon/movies/65379f9a477eb54ad2f8faf2 HTTP/1.1" 200 203 "-" "PostmanRuntime/7.34.0"
+127.0.0.1 - - [02/Nov/2023:13:42:11 +0000] "POST /users/RimSimmon/movies/65379fe3477eb54ad2f9ba31 HTTP/1.1" 200 230 "-" "PostmanRuntime/7.34.0"
+127.0.0.1 - - [02/Nov/2023:13:43:37 +0000] "DELETE /users/RimSimmon/movies/65379fe3477eb54ad2f9ba31 HTTP/1.1" 200 203 "-" "PostmanRuntime/7.34.0"

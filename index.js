@@ -10,18 +10,40 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const uuid = require('uuid');
 const fs = require('fs'); // import built in node modules fs and path 
 const path = require('path');
-const { title } = require('process');
-const mongoose = require('mongoose');
-// imports model.js 
-const Models= require('./models');
-const cors = require('cors');
-app.use(cors());
-
 // server-side validator
 const {check, validationResult}= require('express-validator'); 
 let auth = require('./auth')(app);
 const passport=require('passport');
 require('./passport');
+
+const mongoose = require('mongoose');
+// imports model.js 
+const Models= require('./models');
+
+const cors = require('cors');
+
+let allowedOrigins = [
+  "http://localhost:8080",
+  "https://user-movies-b3ba594615fa.herokuapp.com/",
+  "http://localhost:1234",
+  "https://gomyflix.netlify.app",
+  "http://localhost:4200",
+];
+
+app.use(cors(
+  {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) { // If a specific origin isn’t found on the list of allowed origins
+      let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
+      return callback(new Error(message), false);
+    }
+    return callback(null, true);
+  }
+}
+));
+
+
 
 
 // these model represents data for movies collection
@@ -190,7 +212,7 @@ app.get('/directors', passport.authenticate('jwt', {session: false}), (req,res)=
 
 
 // Get a movie by title
-app.get('/movies/:Title', passport.authenticate('jwt', {session: false}), (req, res) => {
+app.get('/movies/:title', passport.authenticate('jwt', {session: false}), (req, res) => {
 	Movies.findOne({ Title: req.params.Title })
   .populate('Genres')
   .populate('Directors')
@@ -209,7 +231,7 @@ app.get('/movies/:Title', passport.authenticate('jwt', {session: false}), (req, 
 
 
 // get Genre info for specific Genre
-app.get('/movies/genre/:name', passport.authenticate('jwt', {session: false}), (req, res) => {
+app.get('/movies/genre/:genreName', passport.authenticate('jwt', {session: false}), (req, res) => {
 	Genres.find({name: req.params.name })
   
 		.then((genre) => {
@@ -226,7 +248,7 @@ app.get('/movies/genre/:name', passport.authenticate('jwt', {session: false}), (
 });
 
 // get director info by name
-app.get('/movies/director/:name', passport.authenticate('jwt', {session: false}), (req, res) => {
+app.get('/movies/director/:directorName', passport.authenticate('jwt', {session: false}), (req, res) => {
 	Directors.find({'name': req.params.name })
 		.then((director) => {
 			if (director.length === 0) {
@@ -357,7 +379,7 @@ app.get('/users/:username', passport.authenticate('jwt', { session: false }), (r
 
 
 // Add a movie to a user's list of favorites
-app.post('/users/:username/movies/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.post('/users/:username/movies/:movieId', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ username: req.params.username }, {
     $push: { favorite_movies: req.params.id }
   },
@@ -377,7 +399,7 @@ app.post('/users/:username/movies/:id', passport.authenticate('jwt', { session: 
 
 
 // remove movie from user's favorite list by username
-app.delete('/users/:username/movies/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.delete('/users/:username/movies/:movieId', passport.authenticate('jwt', { session: false }), (req, res) => {
  Users.findOneAndUpdate({ username: req.params.username }, {
    $pull: { favorite_movies: req.params.id }
  },
