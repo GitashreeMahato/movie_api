@@ -28,6 +28,7 @@ let allowedOrigins = [
   "http://localhost:1234",
   "https://gomyflix.netlify.app",
   "http://localhost:4200",
+  "http://localhost:4200/welcome"
 ];
 
 app.use(cors(
