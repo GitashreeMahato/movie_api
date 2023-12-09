@@ -1,50 +1,23 @@
-const express = require('express');
-require('dotenv').config();
-const app = express();
+const express = require('express'); //Express.js for creating the web application
+const mongoose = require('mongoose');
+const Models= require('./models'); // imports model.js 
+const app = express(); // Create an instance of the Express application
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 const morgan = require('morgan');
-const bodyParser = require('body-parser');
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-const uuid = require('uuid');
+const bodyParser = require('body-parser'); // For parsing request bodies
+const uuid = require('uuid'); // UUID for generating unique identifiers
 const fs = require('fs'); // import built in node modules fs and path 
-const path = require('path');
+const path = require('path'); // Path for working with file paths
+require('dotenv').config();  // Configure environment variables using Dotenv
+
 // server-side validator
 const {check, validationResult}= require('express-validator'); 
-let auth = require('./auth')(app);
-const passport=require('passport');
-require('./passport');
 
-const mongoose = require('mongoose');
-// imports model.js 
-const Models= require('./models');
-
+// Import and use the CORS module to enable Cross-Origin Resource Sharing
 const cors = require('cors');
-
-// let allowedOrigins = [
-//   "http://localhost:8080",
-//   "https://user-movies-b3ba594615fa.herokuapp.com",
-//   "http://localhost:1234",
-//   "https://gomyflix.netlify.app",
-//   "http://localhost:4200", 
-// ];
-
-app.use(cors(
-//   {
-//   origin: (origin, callback) => {
-//     if (!origin) return callback(null, true);
-//     if (allowedOrigins.indexOf(origin) === -1) { // If a specific origin isn’t found on the list of allowed origins
-//       let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
-//       return callback(new Error(message), false);
-//     }
-//     return callback(null, true);
-//   }
-// }
-));
-
-
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // these model represents data for movies collection
 const Movies= Models.Movie;
@@ -52,6 +25,31 @@ const Genres = Models.Genre;
 const Directors = Models.Director;
 const Actors = Models.Actor;
 const Users = Models.User;
+
+let allowedOrigins = [
+  "http://localhost:8080",
+  "https://user-movies-b3ba594615fa.herokuapp.com",
+  "http://localhost:1234",
+  "https://gomyflix.netlify.app",
+  "http://localhost:4200"
+];
+
+app.use(cors(
+  {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) { // If a specific origin isn’t found on the list of allowed origins
+      let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
+      return callback(new Error(message), false);
+    }
+    return callback(null, true);
+  }
+}
+));
+// Import authentication modules and configure authentication
+require('./auth')(app);
+const passport=require('passport');
+require('./passport'); // Import and configure Passport.js
 
 // const mongoURL = process.env.CONNECTION_URI
 // connected mongodb or integrated b/w REST API to data layer
