@@ -303,3 +303,5 @@ Timestamp : Fri Sep 29 2023 18:30:46 GMT+0200 (Central European Summer Time)
 127.0.0.1 - - [02/Nov/2023:13:40:09 +0000] "POST /users/RimSimmon/movies/65379f9a477eb54ad2f8faf2 HTTP/1.1" 200 203 "-" "PostmanRuntime/7.34.0"
 127.0.0.1 - - [02/Nov/2023:13:42:11 +0000] "POST /users/RimSimmon/movies/65379fe3477eb54ad2f9ba31 HTTP/1.1" 200 230 "-" "PostmanRuntime/7.34.0"
 127.0.0.1 - - [02/Nov/2023:13:43:37 +0000] "DELETE /users/RimSimmon/movies/65379fe3477eb54ad2f9ba31 HTTP/1.1" 200 203 "-" "PostmanRuntime/7.34.0"
+127.0.0.1 - - [09/Dec/2023:16:44:00 +0000] "GET / HTTP/1.1" 200 22 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+127.0.0.1 - - [09/Dec/2023:16:44:00 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://localhost:8080/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
