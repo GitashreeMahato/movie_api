@@ -261,6 +261,21 @@ app.get('/movies/director/:directorName', passport.authenticate('jwt', {session:
 		});
 });
 
+// get actor info by name
+app.get('/movies/actor/:actorName', passport.authenticate('jwt', {session: false}), (req, res) => {
+	Actors.find({'name': req.params.name })
+		.then((actor) => {
+			if (actor.length === 0) {
+				return res.status(404).send('Error: no actor found with the ' + req.params.name + 'name.');
+			} else {
+				res.status(200).json(actor);
+			}
+		})
+		.catch((err) => {
+			console.error(err);
+			res.status(500).send('Error: ' + err);
+		});
+});
 
 
 // create a user 
