@@ -211,7 +211,7 @@ app.get('/directors', passport.authenticate('jwt', {session: false}), (req,res)=
 
 // Get a movie by title
 app.get('/movies/:title', passport.authenticate('jwt', {session: false}), (req, res) => {
-	Movies.findOne({ Title: req.params.Title })
+	Movies.findOne({ Title: req.params.title })
   .populate('Genres')
   .populate('Directors')
   .populate('Actors')
@@ -230,7 +230,7 @@ app.get('/movies/:title', passport.authenticate('jwt', {session: false}), (req, 
 
 // get Genre info for specific Genre
 app.get('/movies/genre/:genreName', passport.authenticate('jwt', {session: false}), (req, res) => {
-	Genres.find({name: req.params.name })
+	Genres.find({'name': req.params.genreName })
   
 		.then((genre) => {
 			if (genre.length === 0) {
@@ -247,7 +247,7 @@ app.get('/movies/genre/:genreName', passport.authenticate('jwt', {session: false
 
 // get director info by name
 app.get('/movies/director/:directorName', passport.authenticate('jwt', {session: false}), (req, res) => {
-	Directors.find({'name': req.params.name })
+	Directors.find({'name': req.params.directorName })
 		.then((director) => {
 			if (director.length === 0) {
 				return res.status(404).send('Error: no director found with the ' + req.params.name + 'name.');
@@ -263,7 +263,7 @@ app.get('/movies/director/:directorName', passport.authenticate('jwt', {session:
 
 // get actor info by name
 app.get('/movies/actor/:actorName', passport.authenticate('jwt', {session: false}), (req, res) => {
-	Actors.find({'name': req.params.name })
+	Actors.find({'name': req.params.actorName })
 		.then((actor) => {
 			if (actor.length === 0) {
 				return res.status(404).send('Error: no actor found with the ' + req.params.name + 'name.');
