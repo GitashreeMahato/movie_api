@@ -78,6 +78,37 @@ app.get('/', (req, res) => {
 });
 
 // add a movie
+/**
+ * @method POST
+ * @param {string} endpoint - /movie
+ * @param {function} callback
+ * @returns {object} response - Returns a movie object
+ * @description Adds a new movie
+ * @example body {
+ * Title: 'movie1',
+ * Description: 'movie1 description',
+ * Genres: {name: 'genre1', description: 'genre1 description'},
+ * Directors: {name: 'director1', bio: 'director1 bio', birth: '01/01/2000', death: '01/01/2000'},
+ * Ratings: 8,
+ * Release_Date: '2022-09-12',
+ * imageURL: 'imageURL',
+ * Featured: true
+ * }
+ * @example response {
+ * _id: 123456789,
+ * Title: 'movie1',
+ * description: 'movie1 description',
+ * Genres: {name: 'genre1', description: 'genre1 description'},
+ * Directors: {name: 'director1', bio: 'director1 bio', birth: '01/01/2000', death: '01/01/2000'},
+ * Ratings: 7,
+ * Release_Date: '1999-09-01',
+ * imageURL: 'imageURL',
+ * Featured: true
+ * }
+ * @throws Will throw an error if the movie already exists
+ * @throws Will throw an error if the genre is not found
+ * @throws Will throw an error if the director is not found
+ */
 app.post('/movie', passport.authenticate('jwt', {session: false}), async(req, res)=>{
   await Movies.findOne({Title: req.body.Title})  // Search to see if a user with the requested username already exists
  .then((movie)=>{    //If the user is found, send a response that it already exists
@@ -160,7 +191,6 @@ app.post('/director', passport.authenticate('jwt', {session: false}), async(req,
 })
 
 // add a actor
-
 app.post('/actor', passport.authenticate('jwt', {session: false}), async(req, res)=>{
   Actors.findOne({name: req.body.name})
   .then((actor)=>{
@@ -181,7 +211,27 @@ app.post('/actor', passport.authenticate('jwt', {session: false}), async(req, re
   })
 })
 
-// Get all movies
+/**
+ * @method GET
+ * @param {string} endpoint - /movies
+ * @param {function} callback 
+ * @returns {object} response - Returns a list of all movies
+ * @description Returns a list of all movies
+ * @example response [
+ * {
+ * _id: 123456789, 
+ * Title: 'movie1', 
+ * Description: 'movie1 description', 
+ * Genres: {name: 'genre1', description: 'genre1 description'}, 
+ * Directors: {name: 'director1', bio: 'director1 bio', birth_year: '01/01/2000', death_year: '01/01/2000'}, 
+ * Actors: {name: 'actor1', birth_date: ''},
+ * Ratings: 8,
+ * Release_Date: 2021-04-18,
+ * imageURL: 'imageURL', 
+ * Featured: true
+ * }, [] ]
+ * @throws Will throw an error if something goes wrong
+ */
 
 app.get('/movies', passport.authenticate('jwt', {session: false}), (req,res)=>{
   Movies.find()
@@ -198,6 +248,7 @@ app.get('/movies', passport.authenticate('jwt', {session: false}), (req,res)=>{
 })
 
 // Get all directors
+
 app.get('/directors', passport.authenticate('jwt', {session: false}), (req,res)=>{
   Directors.find()
   .then((director)=>{
@@ -211,6 +262,25 @@ app.get('/directors', passport.authenticate('jwt', {session: false}), (req,res)=
 
 
 // Get a movie by title
+/**
+ * @method GET
+ * @param {string} endpoint - /movies/:title
+ * @param {function} callback
+ * @returns {object} response - Returns a movie object
+ * @description Returns a movie object
+ * @example response {
+ * _id: 123456789,
+ * Title: 'movie1',
+ * Description: 'movie1 description',
+ * Genres: {name: 'genre1', description: 'genre1 description'},
+ * Directors: {name: 'director1', bio: 'director1 bio', birth: '01/01/2000', death: '01/01/2000'},
+ * imageURL: 'imageURL',
+ * Ratings: 7,
+ * Release_Date: 2023-09-12,
+ * featured: true
+ * }
+ * @throws Will throw an error if the movie is not found
+ */
 app.get('/movies/:title', passport.authenticate('jwt', {session: false}), (req, res) => {
 	Movies.findOne({ Title: req.params.title })
   .populate('Genres')
@@ -228,8 +298,18 @@ app.get('/movies/:title', passport.authenticate('jwt', {session: false}), (req, 
 		});
 });
 
-
-// get Genre info for specific Genre
+/**
+ * @method GET
+ * @param {string} endpoint - /movies/genre/:genreName
+ * @param {function} callback
+ * @returns {object} response - Returns a genre object
+ * @description Returns a genre object
+ * @example response {
+ * name: 'genre1',
+ * description: 'genre1 description'
+ * }
+ * @throws Will throw an error if the genre is not found
+ */
 app.get('/movies/genre/:genreName', passport.authenticate('jwt', {session: false}), (req, res) => {
 	Genres.find({'name': req.params.genreName })
   
@@ -247,6 +327,20 @@ app.get('/movies/genre/:genreName', passport.authenticate('jwt', {session: false
 });
 
 // get director info by name
+/**
+ * @method GET
+ * @param {string} endpoint - /movies/director/:directorName
+ * @param {function} callback
+ * @returns {object} response - Returns a director object
+ * @description Returns a director object
+ * @example response {
+ * name: 'director1',
+ * bio: 'director1 bio'
+ * birth_year: '01/01/2000'
+ * death_year: '01/01/2000'
+ * }
+ * @throws Will throw an error if the director is not found
+ */
 app.get('/movies/director/:directorName', passport.authenticate('jwt', {session: false}), (req, res) => {
 	Directors.find({'name': req.params.directorName })
 		.then((director) => {
@@ -263,6 +357,18 @@ app.get('/movies/director/:directorName', passport.authenticate('jwt', {session:
 });
 
 // get actor info by name
+/**
+ * @method GET
+ * @param {string} endpoint - /movies/actor/:actorName
+ * @param {function} callback
+ * @returns {object} response - Returns a director object
+ * @description Returns a director object
+ * @example response {
+ * name: 'director1',
+ * birth_date: '1998-09-12'
+ * }
+ * @throws Will throw an error if the director is not found
+ */
 app.get('/movies/actor/:actorName', passport.authenticate('jwt', {session: false}), (req, res) => {
 	Actors.find({'name': req.params.actorName })
 		.then((actor) => {
@@ -279,7 +385,34 @@ app.get('/movies/actor/:actorName', passport.authenticate('jwt', {session: false
 });
 
 
-// create a user 
+/**
+ * @method POST
+ * @param {string} endpoint - /users
+ * @param {function} callback
+ * @returns {object} response - Returns a user object
+ * @description Adds a new user
+ * @example body {
+ * username: 'user1',
+ * password: 'password',
+ * email: '',
+ * birth_date: '01/01/2000'
+ * }
+ * @example response {
+ * _id: 123456789,
+ * username: 'user1',
+ * password: 'password',
+ * email: '',
+ * birth_date: '01/01/2000',
+ * favorite_movies: [123456789, 123456789]
+ * }
+ * @throws Will throw an error if the user already exists
+ * @throws Will throw an error if the username contains non alphanumric characters
+ * @throws Will throw an error if the username is less than 5 characters
+ * @throws Will throw an error if the email is not valid
+ * @throws Will throw an error if the password is empty
+ * @throws Will throw an error if the birthday is not a date
+ * @throws Will throw an error if the birthday is not in the past
+ */
 app.post('/users',
 // Validation logic here for request
   //you can either use a chain of methods like .not().isEmpty()
@@ -324,9 +457,30 @@ app.post('/users',
 })
 
 
-
-
 // update user's info
+/**
+ * @method PUT 
+ * @param {string} endpoint - /users/:username
+ * @param {function} callback
+ * @returns {object} response - Returns a user object
+ * @description Updates a user
+ * @example body {
+ * username: 'user1',
+ * password: 'password',
+ * email: '',
+ * birth_date: '01/01/2000'
+ * }
+ * @example response {
+ * _id: 123456789,
+ * username: 'user1',
+ * password: 'password',
+ * email: '',
+ * birth_date: '01/01/2000',
+ * favorite_movies: [123456789, 123456789]
+ * }
+ * @throws Will throw an error if the user is not found
+ * @throws Will throw an error if the user is not the same as the user being updated
+ */
 app.put('/users/:username', passport.authenticate('jwt', { session: false }),
 [
   check('username', 'Username is required').isLength({min: 5}),
@@ -363,6 +517,24 @@ app.put('/users/:username', passport.authenticate('jwt', { session: false }),
 
 
 // get all user
+/**
+ * @method GET
+ * @param {string} endpoint - /users
+ * @param {function} callback
+ * @returns {object} response - Returns a list of all users 
+ * @description Returns a list of all users   
+ * @example response [
+ * {
+ * _id: 123456789,
+ * username: 'user1',
+ * password: 'password',
+ * email: '',
+ * birth_date: '01/01/2000',
+ * favorite_movies: [123456789, 123456789]
+ *  }, [] ]
+ * @throws Will throw an error if the user is not found
+ * @throws Will throw an error if the user is not the same as the user being updated
+ */
 app.get('/users', (req, res) => {
   Users.find()
   // .populate('Movies')
@@ -378,6 +550,21 @@ app.get('/users', (req, res) => {
 
 
 // Get a user by username
+/**
+ * @method GET
+ * @param {string} endpoint - /movies/user/:username
+ * @param {function} callback
+ * @returns {object} response - Returns a director object
+ * @description Returns a director object
+ * @example response {
+ * _id: 123456789,
+ * username: 'user1',
+ * password: 'password',
+ * email: '',
+ * birth_date: '01/01/2000',
+ * favorite_movies: [123456789, 123456789]
+ * @throws Will throw an error if the user is not found
+ */
 app.get('/users/:username', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOne({ username: req.params.username })
   // .populate('Movies', 'Title')
@@ -393,6 +580,24 @@ app.get('/users/:username', passport.authenticate('jwt', { session: false }), (r
 
 
 // Add a movie to a user's list of favorites
+/**
+ * @method POST 
+ * @param {string} endpoint - /users/:username/movies/:movieId
+ * @param {function} callback
+ * @returns {object} response - Returns a user object
+ * @description Adds a movie to users array
+ * @example response {
+ * _id: 123456789,
+ * username: 'user1',
+ * password: 'password',
+ * email: '',
+ * birth_date: '01/01/2000',
+ * favorite_movies: [123456789]  
+ * }
+ * @throws Will throw an error if the user is not found
+ * @throws Will throw an error if the movie is not found
+ * @throws Will throw an error if the movie is already in the users array
+ */
 app.post('/users/:username/movies/:movieId', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ username: req.params.username }, {
     $push: { favorite_movies: req.params.movieId }
@@ -413,6 +618,24 @@ app.post('/users/:username/movies/:movieId', passport.authenticate('jwt', { sess
 
 
 // remove movie from user's favorite list by username
+/** 
+ * @method DELETE
+ * @param {string} endpoint - /users/:username/movies/:movieId
+ * @param {function} callback
+ * @returns {object} response - Returns a user object
+ * @description Deletes a movie from users array
+ * @example response {
+ * _id: 123456789,
+ * name: 'user1',
+ * password: 'password',
+ * email: '',
+ * birth_date: '01/01/2000',
+ * favorite_movies: []
+ * }
+ * @throws Will throw an error if the user is not found
+ * @throws Will throw an error if the movie is not found
+ * @throws Will throw an error if the movie is not in the users array
+ */
 app.delete('/users/:username/movies/:movieId', passport.authenticate('jwt', { session: false }), (req, res) => {
  Users.findOneAndUpdate({ username: req.params.username }, {
    $pull: { favorite_movies: req.params.movieId }
@@ -434,6 +657,16 @@ app.delete('/users/:username/movies/:movieId', passport.authenticate('jwt', { se
 
 
 // Delete a user by username
+/**
+ * @method DELETE
+ * @param {string} endpoint - /users/:username
+ * @param {function} callback
+ * @returns {string} response - Returns a string
+ * @description Deletes a user
+ * @example response 'user1 was deleted'
+ * @throws Will throw an error if the user is not found
+ * @throws Will throw an error if the user has movies in their favoriteMovies array
+ */
 app.delete('/users/:username', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndRemove({ username: req.params.username })
    .then((user) => {
