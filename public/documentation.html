@@ -83,7 +83,7 @@
                 </tr>
                 <tr>
                     <td>Get data about genre by name</td>
-                    <td>/movies/genre/:name</td>
+                    <td>/movies/genre/:genreName</td>
                     <td>GET</td>
                     <td>None</td>
                     <td>A JSON object holding data about a genre containing name and description properties. Example:
@@ -99,7 +99,7 @@
                 </tr>
                 <tr>
                     <td>Get data about director by name</td>
-                    <td>/movies/director/:name</td>
+                    <td>/movies/director/:directorName</td>
                     <td>GET</td>
                     <td>None</td>
                     <td>A JSON object holding data
@@ -242,7 +242,7 @@
 
                 <tr>
                     <td>Add movies to user favourite list </td>
-                    <td>/users/:username/movies/:id</td>
+                    <td>/users/:username/movies/:movieId</td>
                     <td>POST</td>
                     <td>None</td>
                     <td>A JSON object holding data about user's favorite list, structured like this:
@@ -265,7 +265,7 @@
                 </tr>
                 <tr>
                     <td>Remove a movie from user favorite list</td>
-                    <td>/users/:username/movies/:id</td>
+                    <td>/users/:username/movies/:movieId</td>
                     <td>DELETE</td>
                     <td>None</td>
                     <td>A JSON object holding data about user's favorite list, structured like this:
